@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Amigo Invisible - Tachar Secreto</title>
+<style>
+body { font-family: Arial; max-width: 400px; margin: 20px auto; }
+button { margin-top: 10px; padding: 10px; width: 100%; }
+.name { margin: 5px 0; padding: 8px; border: 1px solid #aaa; cursor: pointer; }
+.name.tachado { text-decoration: line-through; color: gray; }
+.hidden { display: none; }
+</style>
+</head>
+<body>
+
+<h2>Amigo Invisible (Tachar Secreto)</h2>
+
+<div id="step2">
+  <h3>Toca un nombre para tacharlo</h3>
+  <p>Luego pulsa "Guardar y ocultar" para pasar el móvil a la siguiente persona.</p>
+  <div id="namesList"></div>
+  <button onclick="hideNames()">Guardar y ocultar</button>
+</div>
+
+<div id="step3" class="hidden">
+  <h3>Tachado guardado</h3>
+  <p>Pasa el móvil a la siguiente persona para que continúe.</p>
+  <button onclick="showNames()">Continuar</button>
+  <button onclick="showRemaining()">Mostrar el único nombre sin tachar</button>
+</div>
+
+<div id="step4" class="hidden">
+  <h3>Nombre que queda sin tachar:</h3>
+  <h2 id="remaining" style="color:green;"></h2>
+</div>
+
+<script>
+let names = ["Gloria","Merche","Nicolás","Ali","Hugo"];
+let tachados = new Set();
+
+function renderNames() {
+  const container = document.getElementById("namesList");
+  container.innerHTML = "";
+  names.forEach(name => {
+    const div = document.createElement("div");
+    div.textContent = name;
+    div.className = "name" + (tachados.has(name) ? " tachado" : "");
+    div.onclick = () => toggleTachado(name, div);
+    container.appendChild(div);
+  });
+}
+
+function toggleTachado(name, div) {
+  if (tachados.has(name)) {
+    tachados.delete(name);
+    div.classList.remove("tachado");
+  } else {
+    tachados.add(name);
+    div.classList.add("tachado");
+  }
+}
+
+function hideNames() {
+  document.getElementById("step2").classList.add("hidden");
+  document.getElementById("step3").classList.remove("hidden");
+}
+
+function showNames() {
+  renderNames();
+  document.getElementById("step3").classList.add("hidden");
+  document.getElementById("step2").classList.remove("hidden");
+}
+
+function showRemaining() {
+  const remaining = names.filter(n => !tachados.has(n));
+  if (remaining.length !== 1) {
+    alert("Aún no queda solo uno sin tachar.");
+    return;
+  }
+  document.getElementById("remaining").textContent = remaining[0];
+  document.getElementById("step4").classList.remove("hidden");
+}
+
+renderNames();
+</script>
+
+</body>
+</html>
